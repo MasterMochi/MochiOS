@@ -1,0 +1,7 @@
+build/obj/*
+build/makeimg
+build/makedisk
+build/libc.a
+doxygen/log/*
+doxygen/lib/*
+doxygen/tool/*
