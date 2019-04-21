@@ -1,37 +1,46 @@
 #******************************************************************************#
+#*                                                                            *#
 #* src/lib/libc/Makefile                                                      *#
-#*                                                                 2019/01/28 *#
+#*                                                                 2019/04/16 *#
 #* Copyright (C) 2016-2019 Mochi.                                             *#
+#*                                                                            *#
 #******************************************************************************#
 #******************************************************************************#
 #* 設定                                                                       *#
 #******************************************************************************#
 # ライブラリ名
-LIB = c
+LIB = libc
 
 # ソースコード
-SRCS = stdlib/malloc.c  \
-       stdlib/free.c    \
-       string/memcpy.c  \
-       string/memset.c  \
-       string/strcpy.c  \
-       string/strncmp.c \
-       string/strncpy.c \
-       string/strlen.c
+SRCS  = stdio/vsnprintf.c
+SRCS += stdio/snprintf.c
+SRCS += stdio/Convert.c
+SRCS += stdio/Analyze.c
+SRCS += stdlib/malloc.c
+SRCS += stdlib/free.c
+SRCS += string/memcpy.c
+SRCS += string/memset.c
+SRCS += string/strcpy.c
+SRCS += string/strncmp.c
+SRCS += string/strncpy.c
+SRCS += string/strlen.c
 
+# リリースディレクトリ
+RELEASE_DIR = ../../../release
 # ビルドディレクトリ
-BUILD_DIR = ../../../build
+BUILD_DIR   = ../../../build
 # オブジェクトディレクトリ
-OBJ_DIR   = $(BUILD_DIR)/obj/lib/libc
+OBJ_DIR     = $(BUILD_DIR)/obj/lib/$(LIB)
 
 # Cフラグ
-CFLAGS = -O                     \
-         -Wall                  \
-         -masm=intel            \
-         -m32                   \
-         -ffreestanding         \
-         -Iinclude              \
-         -I$(BUILD_DIR)/include
+CFLAGS  = -O
+CFLAGS += -Wall
+CFLAGS += -masm=intel
+CFLAGS += -m32
+CFLAGS += -ffreestanding
+CFLAGS += -Iinclude
+CFLAGS += -I$(RELEASE_DIR)/include
+CFLAGS += -I$(BUILD_DIR)/include
 
 
 #******************************************************************************#
@@ -52,13 +61,13 @@ DEPS = $(addprefix $(OBJ_DIR)/, $(SRCS:.c=.d))
 #******************************************************************************#
 # コンパイル
 .PHONY: all
-all: $(OBJ_SUBDIRS) $(OBJ_DIR)/lib$(LIB).a $(BUILD_DIR)/lib$(LIB).a Makefile
+all: $(OBJ_SUBDIRS) $(RELEASE_DIR)/$(LIB).a Makefile
 
 # 全生成ファイルの削除
 .PHONY: clean
 clean:
+	-rm -rf $(RELEASE_DIR)/$(LIB).a
 	-rm -rf $(OBJ_DIR)
-	-rm -rf $(BUILD_DIR)/lib$(LIB).a
 
 
 #******************************************************************************#
@@ -71,12 +80,9 @@ clean:
 $(OBJ_SUBDIRS):
 	mkdir -p $@
 
-# ライブラリ
-$(BUILD_DIR)/lib$(LIB).a: $(OBJ_DIR)/lib$(LIB).a Makefile
-	ln -sfr $< $@
-
-$(OBJ_DIR)/lib$(LIB).a: $(OBJS) Makefile
-	$(AR) rcs $@ $(OBJS)
+$(RELEASE_DIR)/$(LIB).a: $(OBJS) Makefile
+	$(AR) rcs $(OBJ_DIR)/$(LIB).a $(OBJS)
+	ln -sfr $(OBJ_DIR)/$(LIB).a $@
 
 # アセンブラファイルコンパイル
 $(OBJ_DIR)/%.o: %.s Makefile

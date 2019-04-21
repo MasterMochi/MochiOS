@@ -1,7 +1,8 @@
 build/obj/*
-build/makeimg
-build/makedisk
-build/libc.a
+install/disk.img
+install/MochiOS.img
+release/libc.a
 doxygen/log/*
 doxygen/lib/*
-doxygen/tool/*
+tags
+!.gitkeep

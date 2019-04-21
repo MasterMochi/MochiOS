@@ -1,38 +1,34 @@
 #******************************************************************************#
-#* src/tool/Makefile                                                          *#
-#*                                                                 2019/01/28 *#
+#*                                                                            *#
+#* vm/qemu/Makefile                                                           *#
+#*                                                                 2019/03/26 *#
 #* Copyright (C) 2019 Mochi.                                                  *#
+#*                                                                            *#
 #******************************************************************************#
 #******************************************************************************#
 #* 設定                                                                       *#
 #******************************************************************************#
-# サブディレクトリ
-SUB_DIRS = makedisk \
-           makeimg
+# イメージ
+IMG = ../../install/disk.img
 
 
 #******************************************************************************#
 #* phonyターゲット                                                            *#
 #******************************************************************************#
-# サブディレクトリのmake実行
-.PHONY: all
-all:
-ifdef SUB_DIRS
-	@for subdir in $(SUB_DIRS);  \
-	do                           \
-	    $(MAKE) -C $$subdir all; \
-	done
-endif
+# qemu実行(オプション無し)
+.PHONY: run
+run:
+	qemu-system-i386 -drive file=$(IMG),format=raw -monitor stdio
 
-# 全生成ファイルの削除
-.PHONY: clean
-clean:
-ifdef SUB_DIRS
-	@for subdir in $(SUB_DIRS);    \
-	do                             \
-	    $(MAKE) -C $$subdir clean; \
-	done
-endif
+# qemu実行(curses)
+.PHONY: run-curses
+run-curses:
+	qemu-system-i386 -drive file=$(IMG),format=raw -curses -monitor stdio
+
+# qemu実行(vnc)
+.PHONY: run-vnc
+run-vnc:
+	qemu-system-i386 -drive file=$(IMG),format=raw -vnc :0 -monitor stdio
 
 
 #******************************************************************************#
