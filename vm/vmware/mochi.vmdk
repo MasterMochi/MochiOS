@@ -1,7 +1,9 @@
 #******************************************************************************#
+#*                                                                            *#
 #* vm/vmware/mochi.vmdk                                                       *#
-#*                                                                 2019/01/30 *#
+#*                                                                 2019/04/27 *#
 #* Copyright (C) 2016-2019 Mochi.                                             *#
+#*                                                                            *#
 #******************************************************************************#
 # Disk DescriptorFile
 version=1
@@ -9,7 +11,7 @@ encording="UTF-8"
 createType="monolithicFlat"
 
 # Extent description
-RW 10080 FLAT "../../install/disk.img" 0
+RW 10080 FLAT "../../build/release/disk.img" 0
 
 # The Disk Data Base
 #DDB

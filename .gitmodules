@@ -1,0 +1,16 @@
+[submodule "install/lib/MLib"]
+	path = src/lib/MLib
+	url = https://github.com/MasterMochi/MLib.git
+	branch = develop
+[submodule "install/kernel"]
+	path = src/kernel
+	url = git://git.osdn.net/gitroot/mochi/master.git
+[submodule "src/driver/mlog"]
+	path = src/driver/mlog
+	url = https://github.com/MasterMochi/mlog.git
+[submodule "src/driver/drv-ns16550"]
+	path = src/driver/drv-ns16550
+	url = https://github.com/MasterMochi/drv-ns16550.git
+[submodule "src/server/mvfs"]
+	path = src/server/mvfs
+	url = https://github.com/MasterMochi/mvfs.git

@@ -1,7 +1,7 @@
-build/obj/*
-install/disk.img
-install/MochiOS.img
-release/libc.a
+build/obj
+build/release/libc.a
+build/release/MochiOS.img
+build/release/disk.img
 doxygen/log/*
 doxygen/lib/*
 tags
