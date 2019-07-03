@@ -109,6 +109,7 @@ image: all $(DISK_IMG) Makefile
 # 全生成ファイルの削除
 .PHONY: clean
 clean:
+	$(MAKE) -C server/mtty/build clean
 	$(MAKE) -C server/mvfs/build clean
 	$(MAKE) -C driver/drv-ns16550/build clean
 	$(MAKE) -C driver/mlog/build clean
