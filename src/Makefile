@@ -1,7 +1,7 @@
 #******************************************************************************#
 #*                                                                            *#
 #* src/Makefile                                                               *#
-#*                                                                 2019/04/27 *#
+#*                                                                 2019/07/01 *#
 #* Copyright (C) 2019 Mochi                                                   *#
 #*                                                                            *#
 #******************************************************************************#
@@ -64,16 +64,19 @@ DRIVER_LDFLAGS += -L${PWD}/kernel/build/release
 #* サーバプロセス設定 *#
 #**********************#
 # 実行ファイル
-SERVERS = server/mvfs/build/release/mvfs
+SERVERS  = server/mvfs/build/release/mvfs
+SERVERS += server/mtty/build/release/mtty
 
 # サーバ用Cフラグ
-SERVER_CFLAGS  = -I${PWD}/driver/mlog/build/release/include
+SERVER_CFLAGS  = -I${PWD}/server/mvfs/build/release/include
+SERVER_CFLAGS += -I${PWD}/driver/mlog/build/release/include
 SERVER_CFLAGS += -I${PWD}/../build/release/include
 SERVER_CFLAGS += -I${PWD}/lib/MLib/build/release/include
 SERVER_CFLAGS += -I${PWD}/kernel/build/release/include
 
 # サーバ用LDフラグ
-SERVER_LDFLAGS  = -L${PWD}/driver/mlog/build/release
+SERVER_LDFLAGS  = -L${PWD}/server/mvfs/build/release
+SERVER_LDFLAGS += -L${PWD}/driver/mlog/build/release
 SERVER_LDFLAGS += -L${PWD}/../build/release
 SERVER_LDFLAGS += -L${PWD}/lib/MLib/build/release
 SERVER_LDFLAGS += -L${PWD}/kernel/build/release
@@ -143,6 +146,8 @@ driver: Makefile
 server: Makefile
 	env BASE_CFLAGS="$(SERVER_CFLAGS)" BASE_LDFLAGS="$(SERVER_LDFLAGS)" \
         $(MAKE) -C server/mvfs/build
+	env BASE_CFLAGS="$(SERVER_CFLAGS)" BASE_LDFLAGS="$(SERVER_LDFLAGS)" \
+        $(MAKE) -C server/mtty/build
 
 
 #******************************************************************************#

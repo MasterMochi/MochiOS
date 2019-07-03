@@ -5,12 +5,20 @@
 [submodule "install/kernel"]
 	path = src/kernel
 	url = git://git.osdn.net/gitroot/mochi/master.git
+	branch = develop
 [submodule "src/driver/mlog"]
 	path = src/driver/mlog
 	url = https://github.com/MasterMochi/mlog.git
+	branch = develop
 [submodule "src/driver/drv-ns16550"]
 	path = src/driver/drv-ns16550
 	url = https://github.com/MasterMochi/drv-ns16550.git
+	branch = develop
 [submodule "src/server/mvfs"]
 	path = src/server/mvfs
 	url = https://github.com/MasterMochi/mvfs.git
+	branch = develop
+[submodule "src/server/mtty"]
+	path = src/server/mtty
+	url = https://github.com/MasterMochi/mtty.git
+	branch = develop
