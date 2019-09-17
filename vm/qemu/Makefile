@@ -28,7 +28,7 @@ run-curses:
 # qemu実行(vnc)
 .PHONY: run-vnc
 run-vnc:
-	qemu-system-i386 -drive file=$(IMG),format=raw -vnc :0 -monitor stdio
+	qemu-system-i386 -drive file=$(IMG),format=raw -vnc :0 -monitor stdio -serial telnet::4444,server
 
 
 #******************************************************************************#
