@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /* string.h                                                                   */
-/*                                                                 2019/04/21 */
+/*                                                                 2019/08/28 */
 /* Copyright (C) 2016-2019 Mochi                                              */
 /*                                                                            */
 /******************************************************************************/
@@ -25,6 +25,8 @@ extern void *memset( void   *s,
                      size_t n   );
 extern char *strcpy( char       *s1,
                      const char *s2  );
+extern int strcmp( const char *s1,
+                   const char *s2  );
 extern int strncmp( const char *s1,
                     const char *s2,
                     size_t     n    );

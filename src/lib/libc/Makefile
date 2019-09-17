@@ -1,7 +1,7 @@
 #******************************************************************************#
 #*                                                                            *#
 #* src/lib/libc/Makefile                                                      *#
-#*                                                                 2019/04/27 *#
+#*                                                                 2019/08/28 *#
 #* Copyright (C) 2016-2019 Mochi.                                             *#
 #*                                                                            *#
 #******************************************************************************#
@@ -21,6 +21,7 @@ SRCS += stdlib/free.c
 SRCS += string/memcpy.c
 SRCS += string/memset.c
 SRCS += string/strcpy.c
+SRCS += string/strcmp.c
 SRCS += string/strncmp.c
 SRCS += string/strncpy.c
 SRCS += string/strlen.c
