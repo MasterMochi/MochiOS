@@ -1,7 +1,9 @@
 /******************************************************************************/
+/*                                                                            */
 /* src/lib/libc/stdlib/free.c                                                 */
-/*                                                                 2019/01/28 */
+/*                                                                 2019/07/28 */
 /* Copyright (C) 2018-2019 Mochi.                                             */
+/*                                                                            */
 /******************************************************************************/
 /******************************************************************************/
 /* インクルード                                                               */
@@ -11,10 +13,8 @@
 #include <stdint.h>
 
 /* ライブラリヘッダ */
+#include <libmk.h>
 #include <MLib/MLibList.h>
-
-/* モジュール外ヘッダ */
-#include <kernel/proc.h>
 
 /* モジュール内ヘッダ */
 #include "malloc.h"
@@ -66,8 +66,10 @@ void free( void *ptr )
         /* ブレイクポイント変更有り */
 
         /* ブレイクポイント減算 */
-        pgBreakPoint = MkProcSetBreakPoint(
-                           - ( sizeof ( mallocArea_t ) + pArea->size ), NULL );
+        LibMkProcSetBreakPoint(
+            - ( sizeof ( mallocArea_t ) + pArea->size ),
+            &pgBreakPoint,
+            NULL                                         );
 
     } else {
         /* ブレイクポイント変更無し */

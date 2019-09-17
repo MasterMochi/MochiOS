@@ -1,7 +1,9 @@
 /******************************************************************************/
+/*                                                                            */
 /* src/lib/libc/stdlib/malloc.c                                               */
-/*                                                                 2019/01/28 */
+/*                                                                 2019/07/28 */
 /* Copyright (C) 2018-2019 Mochi.                                             */
+/*                                                                            */
 /******************************************************************************/
 /******************************************************************************/
 /* インクルード                                                               */
@@ -12,10 +14,8 @@
 #include <stdlib.h>
 
 /* ライブラリヘッダ */
+#include <libmk.h>
 #include <MLib/MLibList.h>
-
-/* モジュール外ヘッダ */
-#include <kernel/proc.h>
 
 /* モジュール内ヘッダ */
 #include "malloc.h"
@@ -142,7 +142,7 @@ bool MallocInit( void )
     }
 
     /* ブレイクポイント取得 */
-    pgBreakPoint = MkProcSetBreakPoint( 0, NULL );
+    LibMkProcSetBreakPoint( 0, &pgBreakPoint, NULL );
 
     /* 取得結果判定 */
     if ( pgBreakPoint == NULL ) {
@@ -244,8 +244,9 @@ static void *AllocFromNewHeap( size_t size )
     pArea = pgBreakPoint;
 
     /* ブレイクポイント設定 */
-    pNewBreakPoint =
-        MkProcSetBreakPoint( sizeof ( mallocArea_t ) + size, NULL );
+    LibMkProcSetBreakPoint( sizeof ( mallocArea_t ) + size,
+                            &pNewBreakPoint,
+                            NULL );
 
     /* 設定結果判定 */
     if ( pNewBreakPoint == NULL ) {
