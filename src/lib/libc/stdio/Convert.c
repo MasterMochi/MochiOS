@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdio/Convert.c                                               */
-/*                                                                 2019/04/08 */
+/*                                                                 2019/09/01 */
 /* Copyright (C) 2019 Mochi.                                                  */
 /*                                                                            */
 /******************************************************************************/
@@ -119,6 +119,7 @@ void Convert( char       *pStr,
             ConvertSignedInteger( pStr, size, pArg, pWriteIdx, &info );
             break;
 
+        case 'p':
         case 'o':
         case 'u':
         case 'x': case 'X':
@@ -447,6 +448,7 @@ void ConvertUnsignedInteger( char          *pStr,
             letterCase = LOWERCASE;
             break;
         case 'X':
+        case 'p':
             /* 16進整数 */
             base       = 16;
             letterCase = UPPERCASE;
