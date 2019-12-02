@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdlib/free.c                                                 */
-/*                                                                 2019/07/28 */
+/*                                                                 2019/12/01 */
 /* Copyright (C) 2018-2019 Mochi.                                             */
 /*                                                                            */
 /******************************************************************************/
@@ -108,69 +108,68 @@ static void InsertFreeList( mallocArea_t *pArea )
     pPrevArea = NULL;
     pNextArea = NULL;
 
-    /* 未使用メモリ領域リスト先頭取得 */
-    pPrevArea = ( mallocArea_t * )
-                MLibListGetNextNode( &gFreeList, NULL );
+    do {
+        /* シフト */
+        pPrevArea = pNextArea;
 
-    /* 取得結果判定 */
-    if ( pPrevArea == NULL ) {
-        /* メモリ領域無し */
-
-        /* 最後尾に挿入 */
-        MLibListInsertTail( &gFreeList, &( pArea->node ) );
-        return;
-    }
-
-    while ( true ) {
-        /* 次メモリ領域取得 */
+        /* 次未使用メモリ領域情報取得 */
         pNextArea = ( mallocArea_t * )
-                    MLibListGetNextNode( &gFreeList, &( pPrevArea->node ) );
+                    MLibListGetNextNode( &gFreeList,
+                                         ( MLibListNode_t * ) pPrevArea );
 
-        /* 後メモリ領域結合判定 */
+        /* 取得結果判定 */
+        if ( pNextArea == NULL ) {
+            /* メモリ領域無し */
+
+            break;
+        }
+
+    /* 挿入位置判定 */
+    } while ( !( ( pPrevArea < pArea             ) &&
+                 (             pArea < pNextArea )    ) );
+
+    /* 次ノード有無判定 */
+    if ( pNextArea != NULL ) {
+        /* 有り */
+
+        /* 次ノード隣接判定 */
         if ( ( ( uint32_t ) pArea->area + pArea->size ) ==
              ( ( uint32_t ) pNextArea                 )    ) {
-            /* 後方結合 */
+            /* 隣接 */
 
-            /* 結合 */
+            /* 次ノード結合 */
             pArea->size += sizeof ( mallocArea_t ) + pNextArea->size;
 
-            /* 後メモリ領域をリストから削除 */
+            /* 次ノード削除 */
             MLibListRemove( &gFreeList, &( pNextArea->node ) );
         }
+    }
 
-        /* 前メモリ領域結合判定 */
+    /* 前ノード有無判定 */
+    if ( pPrevArea != NULL ) {
+        /* 有り */
+
+        /* 前ノード隣接判定 */
         if ( ( ( uint32_t ) pPrevArea->area + pPrevArea->size ) ==
              ( ( uint32_t ) pArea                             )    ) {
-            /* 前方結合 */
+            /* 隣接 */
 
-            /* 結合 */
+            /* 前ノード結合 */
             pPrevArea->size += sizeof ( mallocArea_t ) + pArea->size;
-            break;
+
+            return;
         }
 
-        /* 後メモリ領域有無判定 */
-        if ( pNextArea == NULL ) {
-            /* 無し */
+        /* 挿入 */
+        MLibListInsertNext( &gFreeList,
+                            &( pPrevArea->node ),
+                            &( pArea->node )      );
 
-            /* 最後尾に挿入 */
-            MLibListInsertTail( &gFreeList, &( pArea->node ) );
-            break;
+    } else {
+        /* 無し */
 
-        }
-
-        /* 前後メモリ領域位置判定 */
-        if ( ( pPrevArea < pArea ) && ( pArea < pNextArea ) ) {
-            /* 中間 */
-
-            /* 挿入 */
-            MLibListInsertNext( &gFreeList,
-                                &( pPrevArea->node ),
-                                &( pArea->node )      );
-            break;
-        }
-
-        /* 次のメモリ領域 */
-        pPrevArea = pNextArea;
+        /* 挿入 */
+        MLibListInsertHead( &gFreeList, &( pArea->node ) );
     }
 
     return;

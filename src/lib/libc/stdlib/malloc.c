@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdlib/malloc.c                                               */
-/*                                                                 2019/07/28 */
+/*                                                                 2019/12/02 */
 /* Copyright (C) 2018-2019 Mochi.                                             */
 /*                                                                            */
 /******************************************************************************/
@@ -196,30 +196,32 @@ static void *AllocFromFreeArea( mallocArea_t *pArea,
 {
     mallocArea_t *pFreeArea;    /* 未使用メモリ領域 */
 
-    /* 未使用メモリ領域リストから削除 */
-    MLibListRemove( &gFreeList, &( pArea->node ) );
-
-    /* 分割判定 */
+     /* 分割判定 */
     if ( ( pArea->size - size ) >= ( sizeof ( mallocArea_t ) + 4 ) ) {
         /* 要分割 */
 
         /* 分割 */
-        pFreeArea = ( mallocArea_t * ) ( ( ( uint32_t ) pArea ) +
-                                         sizeof ( mallocArea_t ) +
-                                         size                      );
+        pArea->size -= sizeof ( mallocArea_t ) + size;
 
-        /* 分割設定 */
-        pFreeArea->size = pArea->size - size - sizeof ( mallocArea_t );
-        pArea->size     = size;
+        /* 未使用メモリ領域情報設定 */
+        pFreeArea       = ( mallocArea_t * )
+                          ( ( ( uint32_t ) pArea->area ) + pArea->size );
+        pFreeArea->size = size;
 
-        /* 未使用メモリ領域リスト追加 */
-        MLibListInsertHead( &gFreeList, &( pFreeArea->node ) );
+    } else {
+        /* 分割不可 */
+
+        /* 未使用メモリ領域設定 */
+        pFreeArea = pArea;
+
+        /* 未使用メモリ領域リストから削除 */
+        MLibListRemove( &gFreeList, &( pArea->node ) );
     }
 
     /* 使用中メモリ領域リストに挿入 */
-    MLibListInsertHead( &gUsedList, &( pArea->node ) );
+    MLibListInsertHead( &gUsedList, &( pFreeArea->node ) );
 
-    return pArea->area;
+    return pFreeArea->area;
 }
 
 
