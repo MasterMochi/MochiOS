@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdlib/malloc.c                                               */
-/*                                                                 2019/12/02 */
-/* Copyright (C) 2018-2019 Mochi.                                             */
+/*                                                                 2020/07/19 */
+/* Copyright (C) 2018-2020 Mochi.                                             */
 /*                                                                            */
 /******************************************************************************/
 /******************************************************************************/
@@ -155,7 +155,7 @@ bool MallocInit( void )
     retMLib = MLibListInit( &gFreeList );
 
     /* 初期化結果判定 */
-    if ( retMLib != MLIB_SUCCESS ) {
+    if ( retMLib != MLIB_RET_SUCCESS ) {
         /* 失敗 */
 
         return false;
@@ -165,7 +165,7 @@ bool MallocInit( void )
     retMLib = MLibListInit( &gUsedList );
 
     /* 初期化結果判定 */
-    if ( retMLib != MLIB_SUCCESS ) {
+    if ( retMLib != MLIB_RET_SUCCESS ) {
         /* 失敗 */
 
         return false;
