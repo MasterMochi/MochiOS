@@ -1,8 +1,8 @@
 #******************************************************************************#
 #*                                                                            *#
 #* src/Makefile                                                               *#
-#*                                                                 2019/07/01 *#
-#* Copyright (C) 2019 Mochi                                                   *#
+#*                                                                 2020/05/18 *#
+#* Copyright (C) 2019-2020 Mochi.                                             *#
 #*                                                                            *#
 #******************************************************************************#
 #******************************************************************************#
@@ -86,13 +86,19 @@ SERVER_LDFLAGS += -L${PWD}/kernel/build/release
 #* ユーザプロセス設定 *#
 #**********************#
 # 実行ファイル
-USERS =
+USERS = user/msh/build/release/msh
 
 # Cフラグ
-USER_CFLAGS =
+USER_CFLAGS  = -I${PWD}/server/mvfs/build/release/include
+USER_CFLAGS += -I${PWD}/../build/release/include
+USER_CFLAGS += -I${PWD}/lib/MLib/build/release/include
+USER_CFLAGS += -I${PWD}/kernel/build/release/include
 
 # LDフラグ
-USER_LDFLAGS =
+USER_LDFLAGS  = -L${PWD}/server/mvfs/build/release
+USER_LDFLAGS += -L${PWD}/../build/release
+USER_LDFLAGS += -L${PWD}/lib/MLib/build/release
+USER_LDFLAGS += -L${PWD}/kernel/build/release
 
 
 #******************************************************************************#
@@ -100,7 +106,7 @@ USER_LDFLAGS =
 #******************************************************************************#
 # サブモジュールコンパイル
 .PHONY: all
-all: lib kernel mlog server driver Makefile
+all: lib kernel mlog server driver user Makefile
 
 # イメージ作成
 .PHONY: image
@@ -109,6 +115,7 @@ image: all $(DISK_IMG) Makefile
 # 全生成ファイルの削除
 .PHONY: clean
 clean:
+	$(MAKE) -C user/msh/build clean
 	$(MAKE) -C server/mtty/build clean
 	$(MAKE) -C server/mvfs/build clean
 	$(MAKE) -C driver/drv-ns16550/build clean
@@ -149,6 +156,12 @@ server: Makefile
         $(MAKE) -C server/mvfs/build
 	env BASE_CFLAGS="$(SERVER_CFLAGS)" BASE_LDFLAGS="$(SERVER_LDFLAGS)" \
         $(MAKE) -C server/mtty/build
+
+# userコンパイル
+.PHONY: user
+user: Makefile
+	env BASE_CFLAGS="$(SERVER_CFLAGS)" BASE_LDFLAGS="$(SERVER_LDFLAGS)" \
+        $(MAKE) -C user/msh/build
 
 
 #******************************************************************************#
