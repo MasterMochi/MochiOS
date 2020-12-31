@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdlib/malloc.c                                               */
-/*                                                                 2020/07/19 */
+/*                                                                 2020/12/31 */
 /* Copyright (C) 2018-2020 Mochi.                                             */
 /*                                                                            */
 /******************************************************************************/
@@ -16,6 +16,7 @@
 /* ライブラリヘッダ */
 #include <libmk.h>
 #include <MLib/MLibList.h>
+#include <MLib/MLibUtil.h>
 
 /* モジュール内ヘッダ */
 #include "malloc.h"
@@ -89,7 +90,7 @@ void *malloc( size_t size )
     }
 
     /* サイズアライメント */
-    size = MLIB_ALIGN( size, 4 );
+    size = MLIB_UTIL_ALIGN( size, 4 );
 
     while ( true ) {
         /* 未使用メモリ領域取得 */
