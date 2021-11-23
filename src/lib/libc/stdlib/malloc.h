@@ -1,7 +1,9 @@
 /******************************************************************************/
+/*                                                                            */
 /* src/lib/libc/stdlib/malloc.h                                               */
-/*                                                                 2019/01/28 */
-/* Copyright (C) 2018-2019 Mochi.                                             */
+/*                                                                 2021/11/21 */
+/* Copyright (C) 2018-2021 Mochi.                                             */
+/*                                                                            */
 /******************************************************************************/
 #ifndef MALLOC_H
 #define MALLOC_H
@@ -12,6 +14,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <MLib/MLibList.h>
+#include <MLib/MLibSpin.h>
 
 
 /******************************************************************************/
@@ -41,6 +44,8 @@ extern void *pgBreakPoint;
 extern MLibList_t gFreeList;
 /** 使用中メモリ領域リスト */
 extern MLibList_t gUsedList;
+/** ロック */
+extern MLibSpin_t gLock;
 
 
 /******************************************************************************/

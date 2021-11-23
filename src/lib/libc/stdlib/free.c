@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdlib/free.c                                                 */
-/*                                                                 2019/12/01 */
-/* Copyright (C) 2018-2019 Mochi.                                             */
+/*                                                                 2021/11/21 */
+/* Copyright (C) 2018-2021 Mochi.                                             */
 /*                                                                            */
 /******************************************************************************/
 /******************************************************************************/
@@ -58,6 +58,9 @@ void free( void *ptr )
     /* 初期化 */
     pArea = ( mallocArea_t * ) ( ptr - offsetof( mallocArea_t, area ) );
 
+    /* ロック */
+    MLibSpinLock( &gLock, NULL );
+
     /* 使用中メモリ領域リストから削除 */
     MLibListRemove( &gUsedList, &( pArea->node ) );
 
@@ -77,6 +80,9 @@ void free( void *ptr )
         /* 未使用メモリ領域リストに挿入 */
         InsertFreeList( pArea );
     }
+
+    /* アンロック */
+    MLibSpinUnlock( &gLock, NULL );
 
     return;
 }

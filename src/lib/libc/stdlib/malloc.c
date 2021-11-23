@@ -1,8 +1,8 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/lib/libc/stdlib/malloc.c                                               */
-/*                                                                 2020/12/31 */
-/* Copyright (C) 2018-2020 Mochi.                                             */
+/*                                                                 2021/11/21 */
+/* Copyright (C) 2018-2021 Mochi.                                             */
 /*                                                                            */
 /******************************************************************************/
 /******************************************************************************/
@@ -36,6 +36,8 @@ void *pgBreakPoint = NULL;
 MLibList_t gFreeList;
 /** 使用中メモリ領域リスト */
 MLibList_t gUsedList;
+/** スピンロック */
+MLibSpin_t gLock = { 0 };
 
 
 /******************************************************************************/
@@ -66,11 +68,17 @@ static void *AllocFromNewHeap( size_t size );
 /******************************************************************************/
 void *malloc( size_t size )
 {
+    void         *pRet;     /* 戻り値     */
     bool         retBool;   /* 初期化結果 */
     mallocArea_t *pArea;    /* メモリ領域 */
 
     /* 初期化 */
-    pArea = NULL;
+    pRet    = NULL;
+    retBool = false;
+    pArea   = NULL;
+
+    /* ロック */
+    MLibSpinLock( &gLock, NULL );
 
     /* malloc管理初期化 */
     retBool = MallocInit();
@@ -79,12 +87,18 @@ void *malloc( size_t size )
     if ( retBool == false ) {
         /* 失敗 */
 
+        /* アンロック */
+        MLibSpinUnlock( &gLock, NULL );
+
         return NULL;
     }
 
     /* サイズチェック */
     if ( size == 0 ) {
         /* サイズ0 */
+
+        /* アンロック */
+        MLibSpinUnlock( &gLock, NULL );
 
         return NULL;
     }
@@ -102,19 +116,24 @@ void *malloc( size_t size )
             /* 未使用メモリ領域無し */
 
             /* ヒープ領域を拡張して割り当て */
-            return AllocFromNewHeap( size );
+            pRet = AllocFromNewHeap( size );
+            break;
         }
 
         /* 未使用メモリ領域サイズ判定 */
         if ( pArea->size >= size ) {
-            /* */
+            /* 指定サイズ以上 */
 
             /* 未使用メモリ領域から割り当て */
-            return AllocFromFreeArea( pArea, size );
+            pRet = AllocFromFreeArea( pArea, size );
+            break;
         }
     }
 
-    return NULL;
+    /* アンロック */
+    MLibSpinUnlock( &gLock, NULL );
+
+    return pRet;
 }
 
 
