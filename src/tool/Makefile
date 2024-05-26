@@ -1,45 +1,46 @@
 #******************************************************************************#
 #*                                                                            *#
-#* vm/qemu/Makefile                                                           *#
-#*                                                                 2022/12/17 *#
-#* Copyright (C) 2019-2022 Mochi.                                             *#
+#* src/tool/Makefile                                                          *#
+#*                                                                 2024/05/12 *#
+#* Copyright (C) 2017-2024 Mochi.                                             *#
 #*                                                                            *#
 #******************************************************************************#
 #******************************************************************************#
 #* 設定                                                                       *#
 #******************************************************************************#
-# イメージ
-IMG = ../../build/release/disk.img
-
-# 共通オプション
-QEMUOPT  = -drive file=$(IMG),format=raw
-QEMUOPT += -monitor stdio
-QEMUOPT += -serial telnet::4444,server,nowait
-QEMUOPT += -serial telnet::4445,server,nowait
+# ビルドディレクトリ
+BUILD_DIR = ../../build
+# オブジェクトディレクトリ
+OBJ_DIR   = $(BUILD_DIR)/obj/tool
+# サブディレクトリ
+SUB_DIRS  = makedisk
+SUB_DIRS += makeimg
+SUB_DIRS += printlog
 
 
 #******************************************************************************#
 #* phonyターゲット                                                            *#
 #******************************************************************************#
-# qemu実行(オプション無し)
-.PHONY: run
-run:
-	qemu-system-i386 $(QEMUOPT)
+# サブディレクトリのmake実行
+.PHONY: all
+all:
+ifdef SUB_DIRS
+	@for subdir in $(SUB_DIRS); \
+	do \
+	    $(MAKE) -C $$subdir all; \
+	done
+endif
 
-# qemu実行(curses)
-.PHONY: run-curses
-run-curses:
-	qemu-system-i386 $(QEMUOPT) -curses
-
-# qemu実行(vnc)
-.PHONY: run-vnc
-run-vnc:
-	qemu-system-i386 $(QEMUOPT) -vnc :0
-
-# qemu実行(gdb+vnc)
-.PHONY: gdb-vnc
-gdb-vnc:
-	qemu-system-i386 $(QEMUOPT) -s -S -vnc :0
+# 全生成ファイルの削除
+.PHONY: clean
+clean:
+ifdef SUB_DIRS
+	@for subdir in $(SUB_DIRS); \
+	do \
+	    $(MAKE) -C $$subdir clean; \
+	done
+endif
+	-rm -rf $(OBJ_DIR)
 
 
 #******************************************************************************#

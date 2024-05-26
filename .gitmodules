@@ -25,3 +25,6 @@
 [submodule "src/user/msh"]
 	path = src/user/msh
 	url = https://github.com/MasterMochi/msh.git
+[submodule "src/lib/mlibc"]
+	path = src/lib/mlibc
+	url = https://github.com/MasterMochi/mlibc.git
