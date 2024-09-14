@@ -1,7 +1,7 @@
 /******************************************************************************/
 /*                                                                            */
 /* src/tool/printlog/printlog.c                                               */
-/*                                                                 2024/05/03 */
+/*                                                                 2024/06/16 */
 /* Copyright (C) 2024 Mochi.                                                  */
 /*                                                                            */
 /******************************************************************************/
@@ -40,8 +40,8 @@ typedef struct {
     uint32_t logNo;     /**< ログ番号     */
     uint16_t moduleId;  /**< モジュールID */
     uint16_t lineNo;    /**< 行番号       */
-    char     str[ 0 ];  /**< 文字列       */
-} memLog_t;
+    uint8_t  lv;        /**< ログレベル   */
+} __attribute__(( __packed__ )) memLog_t;
 
 /** モジュールID変換型 */
 typedef struct {
@@ -98,6 +98,15 @@ static const vramConv_t gConvTbl[] = {
     { CMN_MODULE_IOCTRL_PORT,    "IOC-PORT" },   /* 入出力制御(I/Oポート)    */
     { CMN_MODULE_IOCTRL_MEM,     "IOC-MEM " },   /* 入出力制御(I/Oメモリ)    */
     { 0,                         "UNKNOWN " }  };/* 終端                     */
+
+/** ログレベル変換テーブル */
+static const char gLvTbl[][ 4 ] = {
+    "ABT",
+    "ERR",
+    "WRN",
+    "INF",
+    "TRC",
+    "TMP"  };
 
 
 /******************************************************************************/
@@ -173,10 +182,11 @@ int main( int  argNum,
 
         /* ヘッダ出力 */
         printf(
-            "\e[32m%04d:%s:%04u \e[0m",
+            "\e[32m%04d:%s:%04u[%s] \e[0m",
             header.logNo,
             ConvModuleId( header.moduleId ),
-            header.lineNo
+            header.lineNo,
+            gLvTbl[ header.lv ]
         );
 
         /* \0まで繰り返す */

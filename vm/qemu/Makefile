@@ -16,6 +16,7 @@ QEMUOPT  = -drive file=$(IMG),format=raw
 QEMUOPT += -monitor stdio
 QEMUOPT += -serial telnet::4444,server,nowait
 QEMUOPT += -serial telnet::4445,server,nowait
+QEMUOPT += -no-reboot -d cpu_reset -no-shutdown
 
 
 #******************************************************************************#
